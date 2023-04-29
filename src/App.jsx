@@ -1,8 +1,7 @@
-import { Button } from 'antd'
 import 'antd/dist/reset.css'
-import './App.css'
 import { Route, Routes } from 'react-router-dom'
-import {routes} from './router'
+import './App.css'
+import { routes } from './router'
 
 const App = () => (
   <div className="App">
