@@ -33,7 +33,7 @@ const Header = () => {
       </div>
       <Link
         className="leading-none ml-auto text-gray-500 text-[16px] font-semibold flex gap-2 items-center"
-        to="login"
+        to="/login"
       >
         <FontAwesomeIcon icon={faRightToBracket} />
         Sign in

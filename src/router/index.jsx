@@ -1,7 +1,6 @@
 import { menuConfig } from '../config/config'
 import Home from '../pages/Home/Home'
 import LogIn from '../pages/Login/Login'
-import Register from '../pages/Register/Register'
 
 export const routes = [
   {
@@ -13,11 +12,6 @@ export const routes = [
     path: '/login',
     exact: true,
     element: <LogIn />,
-  },
-  {
-    path: '/register',
-    exact: true,
-    element: <Register />,
   },
   ...menuConfig.map(({ path, children }) => ({
     path: '/' + path,
