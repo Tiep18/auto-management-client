@@ -1,9 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import authService from '../../api/authService'
 
-export const registerThunk = createAsyncThunk(
-  'user/register',
-  async ({ fullName, username, password }, thunkAPI) => {
+export const logInThunk = createAsyncThunk(
+  'auth/login',
+  async ({ username, password }, thunkAPI) => {
     try {
-    } catch (error) {}
+      const data = await authService.logIn({ username, password })
+      sessionStorage.setItem('_at', data.accessToken)
+      sessionStorage.setItem('_rt', data.refeshToken)
+
+      const user = await authService.getProfile()
+      return user
+    } catch (error) {
+      thunkAPI.rejectWithValue(error.response)
+    }
   }
 )

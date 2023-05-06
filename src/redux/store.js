@@ -5,3 +5,5 @@ const store = configureStore({
     auth: authSlice.reducer,
   },
 })
+
+export default store
