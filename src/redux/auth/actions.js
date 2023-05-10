@@ -9,8 +9,8 @@ export const logInThunk = createAsyncThunk(
       sessionStorage.setItem('_at', data.accessToken)
       sessionStorage.setItem('_rt', data.refeshToken)
 
-      const user = await authService.getProfile()
-      return user
+      const currentUser = await authService.getProfile()
+      return currentUser
     } catch (error) {
       thunkAPI.rejectWithValue(error.response)
     }

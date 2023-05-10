@@ -1,6 +1,6 @@
 import { menuConfig } from '../config/config'
 import Home from '../pages/Home/Home'
-import LogIn from '../pages/Login/Login'
+import LogIn from '../pages/LogIn/LogIn'
 
 export const routes = [
   {

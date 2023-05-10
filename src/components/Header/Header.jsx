@@ -1,13 +1,15 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Header as AntdHeader } from 'antd/es/layout/layout'
 import { Breadcrumb } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons'
 import { menuConfig } from '../../config/config'
+import { useSelector } from 'react-redux'
 
 const Header = () => {
   const { pathname } = useLocation()
+  const currentUser = useSelector((state) => state.auth.currentUser)
   const items = useMemo(() => {
     const arr = pathname.split('/')
     arr.shift()
@@ -31,13 +33,20 @@ const Header = () => {
           {items[items.length - 1]?.title}
         </h2>
       </div>
-      <Link
-        className="leading-none ml-auto text-gray-500 text-[16px] font-semibold flex gap-2 items-center"
-        to="/login"
-      >
-        <FontAwesomeIcon icon={faRightToBracket} />
-        Sign in
-      </Link>
+
+      {currentUser ? ( // check if login
+        <h3 className="leading-none ml-auto text-gray-500 text-[16px] font-semibold flex gap-2 items-center">
+          Hello, {currentUser.fullName}
+        </h3>
+      ) : (
+        <Link
+          className="leading-none ml-auto text-gray-500 text-[16px] font-semibold flex gap-2 items-center"
+          to="/login"
+        >
+          <FontAwesomeIcon icon={faRightToBracket} />
+          Sign in
+        </Link>
+      )}
     </AntdHeader>
   )
 }

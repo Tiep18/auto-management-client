@@ -3,7 +3,7 @@ import { logInThunk } from './actions'
 
 const initialState = {
   isLoading: false,
-  user: null,
+  currentUser: null,
 }
 
 const authSlice = createSlice({
@@ -16,11 +16,11 @@ const authSlice = createSlice({
     })
     builder.addCase(logInThunk.fulfilled, (state, action) => {
       state.isLoading = false
-      state.user = action.payload
+      state.currentUser = action.payload
     })
     builder.addCase(logInThunk.rejected, (state) => {
       state.isLoading = false
-      state.user = null
+      state.currentUser = null
     })
   },
 })
