@@ -17,10 +17,6 @@
   -webkit-text-size-adjust: 100%; */
 }
 
-body {
-  min-width: 100vh;
-}
-
 @layer components {
   .icon {
     @apply w-8 text-gray-400 h-8 rounded-[6px] mr-[11px] align-middle inline-flex justify-center items-center shadow-md;

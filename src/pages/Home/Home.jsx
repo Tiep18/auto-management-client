@@ -7,10 +7,7 @@ import { Outlet } from 'react-router-dom'
 
 const Home = () => {
   return (
-    <Layout
-      style={{ minHeight: '100vh' }}
-      className="bgc-fa ant-layout ant-layout-has-sider layout-dashboard  "
-    >
+    <Layout style={{ minHeight: '100vh' }} className="bgc-fa">
       <Nav />
       <Layout className="bgc-fa">
         <Header></Header>
