@@ -6,6 +6,15 @@ const axiosInstance = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+axiosInstance.interceptors.request.use(function (request) {
+  // TODO: mock access token
+  const token =
+    'Bearer ' +
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDU3NWMwODk4ZmVkYjY1MDEzZDY0ZjAiLCJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTY4Mzk3MDQzMSwiZXhwIjoxNjgzOTc0MDMxfQ.VSxzWxLLI8YET-5z3Ycy0JDfcX4Mw4vcVBFndy7Kf0k'
+  request.headers.Authorization = token
+  return request
+})
+
 axiosInstance.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
@@ -15,7 +24,7 @@ axiosInstance.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    return Promise.reject(error)
+    return Promise.reject(error?.response?.data || error)
   }
 )
 export default axiosInstance

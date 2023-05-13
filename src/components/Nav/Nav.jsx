@@ -5,34 +5,33 @@ import logoUrl from '../../assets/logo.png'
 import { menuConfig } from '../../config/config'
 import { useMemo } from 'react'
 
-const getItem = ({ path, name, children, icon, parentPath }) => {
+const getItem = ({ path, name, children, icon, parentPath, type }) => {
+  const isMenuHeader = type === 'menuHeader'
   return {
     key: parentPath ? `/${parentPath}/${path}` : path,
-    type: children?.length > 0 && 'group',
-    className: !children?.length > 0 && 'menu-item',
-    style:
-      !children?.length > 0
-        ? {
-            paddingLeft: 0,
-            margin: 0,
-            padding: 0,
-            height: '52px',
-            width: '211px',
-            marginBottom: '8px',
-          }
-        : {},
-    label:
-      children?.length > 0 ? (
-        <span className="text-[#8c8c8c] font-bold uppercase">{name}</span>
-      ) : (
-        <NavLink
-          to={`/${parentPath}/${path}`}
-          className="py-[10px] px-4 flex items-center rounded-[8px]"
-        >
-          <span className="icon">{icon}</span>
-          <span className="text-[#141414]">{name}</span>
-        </NavLink>
-      ),
+    type: isMenuHeader && 'group',
+    className: !isMenuHeader && 'menu-item',
+    style: !isMenuHeader
+      ? {
+          paddingLeft: 0,
+          margin: 0,
+          padding: 0,
+          height: '52px',
+          width: '211px',
+          marginBottom: '8px',
+        }
+      : {},
+    label: isMenuHeader ? (
+      <span className="text-[#8c8c8c] font-bold uppercase">{name}</span>
+    ) : (
+      <NavLink
+        to={`/${parentPath}/${path}`}
+        className="py-[10px] px-4 flex items-center rounded-[8px]"
+      >
+        <span className="icon">{icon}</span>
+        <span className="text-[#141414]">{name}</span>
+      </NavLink>
+    ),
     children: children?.map((args) => getItem({ ...args, parentPath: path })),
     pathname: parentPath ? `/${parentPath}/${path}` : null,
   }
@@ -43,7 +42,7 @@ function Sidenav() {
   const activeKey = useMemo(() => {
     return items
       .reduce((memo, item) => memo.concat(item.children), [])
-      .find((child) => child.pathname === pathname)?.key
+      .find((child) => pathname.includes(child.pathname))?.key
   }, [pathname])
   return (
     <Sider
@@ -52,7 +51,7 @@ function Sidenav() {
     >
       <Link
         to="/"
-        className="flex w-full items-center justify-center h-[62px] mt-[10px] mb-[13px] "
+        className="flex w-full items-center justify-center h-[62px] mt-[10px] mb-[28px] "
       >
         <img src={logoUrl} alt="logo" width={100} />
       </Link>

@@ -4,24 +4,36 @@ import { Breadcrumb } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons'
-import { menuConfig } from '../../config/config'
+import { mapPathToBreadcrumb } from '../../config/config'
 
 const Header = () => {
   const { pathname } = useLocation()
   const items = useMemo(() => {
     const arr = pathname.split('/')
     arr.shift()
-    let res = []
-    let temp = JSON.parse(JSON.stringify(menuConfig))
-    while (arr.length > 0 && temp) {
-      const i = temp?.find((item) => item.path === arr[0])
-      arr.shift()
-      if (!i) return {}
-      res.push({ title: i.name })
-      temp = i?.children
-    }
-
+    let link = ''
+    const res = arr.map((path) => {
+      link = link + '/' + path
+      return {
+        title: (
+          <Link className="!text-inherit" to={link}>
+            {mapPathToBreadcrumb[path] || path}
+          </Link>
+        ),
+      }
+    })
     return res
+    // let res = []
+    // let temp = JSON.parse(JSON.stringify(menuConfig))
+    // while (arr.length > 0 && temp) {
+    //   const i = temp?.find((item) => item.path === arr[0])
+    //   arr.shift()
+    //   if (!i) return {}
+    //   res.push({ title: i.name })
+    //   temp = i?.children
+    // }
+
+    // return res
   }, [pathname])
   return (
     <AntdHeader className="bgc-fa h-[78px] p-4 my-[10px] mx-5 flex items-center">

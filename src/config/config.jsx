@@ -18,6 +18,7 @@ export const menuConfig = [
   {
     path: 'auto-management',
     name: 'Auto Management',
+    type: 'menuHeader',
     children: [
       {
         path: 'services',
@@ -48,6 +49,7 @@ export const menuConfig = [
   {
     path: 'admin-management',
     name: 'Admin Management',
+    type: 'menuHeader',
     children: [
       {
         path: 'accounts',
@@ -64,3 +66,14 @@ export const menuConfig = [
     ],
   },
 ]
+
+export const mapPathToBreadcrumb = {
+  'auto-management': 'Auto Management',
+  'admin-management': 'Admin Management',
+  services: ' Services',
+  customers: ' Customers',
+  orders: ' Orders',
+  cars: ' Cars',
+  accounts: ' Accounts',
+  'create-new-customer': 'Create New Customer',
+}
