@@ -40,12 +40,18 @@ const getItem = ({ path, name, children, icon, parentPath }) => {
 }
 function Sidenav() {
   const currentUser = useSelector((state) => state.auth.currentUser)
-  const items = menuConfig
-    // check if role is admin
-    .filter((item) =>
-      currentUser?.role === 'ADMIN' ? item : item.path !== 'admin-management'
+  const items = useMemo(() => {
+    return (
+      menuConfig
+        // check if role is admin
+        .filter((item) =>
+          currentUser?.role === 'ADMIN'
+            ? item
+            : item.path !== 'admin-management'
+        )
+        .map(getItem)
     )
-    .map(getItem)
+  }, [currentUser])
   const { pathname } = useLocation()
   const activeKey = useMemo(() => {
     return items

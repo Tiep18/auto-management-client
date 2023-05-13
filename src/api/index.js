@@ -1,4 +1,5 @@
 import axios from 'axios'
+import authService from './authService'
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -8,7 +9,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   function (config) {
-    const accessToken = sessionStorage.getItem('_at')
+    const accessToken = localStorage.getItem('_at')
     config.headers.Authorization = 'Bearer ' + accessToken
     return config
   },
@@ -18,10 +19,10 @@ axiosInstance.interceptors.request.use(
 )
 
 const getAccessToken = async () => {
-  const refeshToken = sessionStorage.getItem('_rt')
-  sessionStorage.setItem('_at', refeshToken)
+  const refeshToken = localStorage.getItem('_rt')
+  localStorage.setItem('_at', refeshToken)
   try {
-    const newAccessToken = await axiosInstance.post('/api/auth/refesh')
+    const newAccessToken = await authService.refeshToken()
     return newAccessToken
   } catch (error) {
     console.log('Failed to get access token', error)
@@ -42,12 +43,12 @@ axiosInstance.interceptors.response.use(
     ) {
       const token = await getAccessToken()
       if (token) {
-        sessionStorage.setItem('_at', token.newAccessToken)
+        localStorage.setItem('_at', token.newAccessToken)
         originalRequest.headers[
           'Authorization'
         ] = `Bearer ${token.newAccessToken}`
         return axiosInstance(originalRequest)
-      }
+      } else window.location.href = `${process.env.VITE_BASE_URL}/login`
     }
     return Promise.reject(error)
   }
