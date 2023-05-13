@@ -10,7 +10,7 @@ axiosInstance.interceptors.request.use(function (request) {
   // TODO: mock access token
   const token =
     'Bearer ' +
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDU3NWMwODk4ZmVkYjY1MDEzZDY0ZjAiLCJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTY4Mzk3MDQzMSwiZXhwIjoxNjgzOTc0MDMxfQ.VSxzWxLLI8YET-5z3Ycy0JDfcX4Mw4vcVBFndy7Kf0k'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDU3NWMwODk4ZmVkYjY1MDEzZDY0ZjAiLCJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTY4Mzk4NTI0OCwiZXhwIjoxNjgzOTg4ODQ4fQ.GM0WoJZbWLKfLIcE34zGfzqdIktBtG3Li7hEjfWuRDA'
   request.headers.Authorization = token
   return request
 })

@@ -4,7 +4,7 @@ import { Breadcrumb } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons'
-import { mapPathToBreadcrumb } from '../../config/config'
+import { mapPathToBreadcrumb } from '../../utils/config/config'
 
 const Header = () => {
   const { pathname } = useLocation()

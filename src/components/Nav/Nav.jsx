@@ -2,8 +2,8 @@ import { Menu } from 'antd'
 import Sider from 'antd/es/layout/Sider'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import logoUrl from '../../assets/logo.png'
-import { menuConfig } from '../../config/config'
 import { useMemo } from 'react'
+import { menuConfig } from '../../utils/config/config'
 
 const getItem = ({ path, name, children, icon, parentPath, type }) => {
   const isMenuHeader = type === 'menuHeader'

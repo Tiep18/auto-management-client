@@ -1,12 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import customerService from '../../api/customerService'
 import { notification } from 'antd'
+import { updateQuery } from './customerSlice'
 
 export const getAllCustomerThunk = createAsyncThunk(
   'customer/getAllCustomer',
   async (payload, thunkAPI) => {
     try {
-      const data = await customerService.getAllCustomers(payload)
+      const { page, search, limit } = thunkAPI.getState().customer
+      thunkAPI.dispatch(updateQuery({ search }))
+      const data = await customerService.getAllCustomers(
+        payload || { page, search, limit }
+      )
       return data
     } catch (err) {
       thunkAPI.rejectWithValue(err.message)
@@ -50,3 +55,18 @@ export const deleteCustomerThunk = createAsyncThunk(
     }
   }
 )
+
+// export const updateQueryThunk = createAsyncThunk(
+//   'customer/updateQuery',
+//   async ({ page, limit, search }, thunkAPI) => {
+//     const currentState = thunkAPI.getState().customer
+//     thunkAPI.dispatch(
+//       updateQuery({
+//         page: page || currentState.page,
+//         limit: limit || currentState.limit,
+//         search: search || currentState.search,
+//       })
+//     )
+
+//   }
+// )

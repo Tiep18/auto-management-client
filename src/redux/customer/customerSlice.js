@@ -19,7 +19,11 @@ const initialState = {
 const customerSlice = createSlice({
   name: 'customer',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    updateQuery: (state, { search }) => {
+      state.search = search
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getAllCustomerThunk.pending, (state) => {
       state.isLoading = true
@@ -68,5 +72,5 @@ const customerSlice = createSlice({
     })
   },
 })
-
+export const { updateQuery } = customerSlice.actions
 export default customerSlice
