@@ -2,14 +2,18 @@ import { createSlice } from '@reduxjs/toolkit'
 import { getProfileThunk, logInThunk } from './actions'
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   currentUser: null,
 }
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    setLoading: (state, payload) => {
+      state.isLoading = payload
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(logInThunk.pending, (state) => {
       state.isLoading = true
@@ -36,5 +40,5 @@ const authSlice = createSlice({
     })
   },
 })
-
+export const { setLoading } = authSlice.actions
 export default authSlice
