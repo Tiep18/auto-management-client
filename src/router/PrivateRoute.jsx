@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     if (currentUser) return
     dispatch(getProfileThunk())
-  }, [])
+  }, [currentUser, dispatch])
 
   if (isLoading)
     return (
