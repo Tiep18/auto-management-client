@@ -6,11 +6,22 @@ export const logInThunk = createAsyncThunk(
   async ({ username, password }, thunkAPI) => {
     try {
       const data = await authService.logIn({ username, password })
-      sessionStorage.setItem('_at', data.accessToken)
-      sessionStorage.setItem('_rt', data.refeshToken)
+      localStorage.setItem('_at', data.accessToken)
+      localStorage.setItem('_rt', data.refeshToken)
+      const currentUser = await authService.getProfile()
+      return currentUser
+    } catch (error) {
+      thunkAPI.rejectWithValue(error.response)
+    }
+  }
+)
 
-      const user = await authService.getProfile()
-      return user
+export const getProfileThunk = createAsyncThunk(
+  'auth/getProfile',
+  async (thunkAPI) => {
+    try {
+      const currentUser = await authService.getProfile()
+      return currentUser
     } catch (error) {
       thunkAPI.rejectWithValue(error.response)
     }

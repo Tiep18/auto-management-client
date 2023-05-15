@@ -1,7 +1,10 @@
 import axiosInstance from '.'
 
-export default {
+const authService = {
   logIn: async ({ username, password }) =>
-    axiosInstance.post('/api/auth/login', { username, password }),
-  getProfile: async () => axiosInstance.get('/api/auth/profile'),
+    await axiosInstance.post('/api/auth/login', { username, password }),
+  getProfile: async () => await axiosInstance.get('/api/auth/profile'),
+  refeshToken: async () => await axiosInstance.post('/api/auth/refesh'),
 }
+
+export default authService

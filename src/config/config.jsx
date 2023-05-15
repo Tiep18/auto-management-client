@@ -1,6 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Services from '../pages/Home/AutoManagement/Services/Services'
-import AdminServices from '../pages/Home/AdminManagement/Services/Services'
 import {
   faCar,
   faFileInvoice,
@@ -9,10 +6,13 @@ import {
   faUserGear,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Accounts from '../pages/Home/AdminManagement/Accounts/Accounts'
+import AdminServices from '../pages/Home/AdminManagement/Services/Services'
+import Cars from '../pages/Home/AutoManagement/Cars/Cars'
 import Customer from '../pages/Home/AutoManagement/Customers/Customers'
 import Orders from '../pages/Home/AutoManagement/Orders/Orders'
-import Cars from '../pages/Home/AutoManagement/Cars/Cars'
-import Accounts from '../pages/Home/AdminManagement/Accounts/Accounts'
+import Services from '../pages/Home/AutoManagement/Services/Services'
 
 export const menuConfig = [
   {
