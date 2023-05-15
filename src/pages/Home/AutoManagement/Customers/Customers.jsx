@@ -1,15 +1,15 @@
-import { Button } from 'antd'
 import React from 'react'
-import { NavLink, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import CreateNewCustomer from './CreateNewCustomer'
 import ListCustomer from './ListCustomer'
+import CustomerDetail from './CustomerDetail'
 
 const Customers = () => {
   return (
     <>
       <Routes>
         <Route path="/create-new-customer" element={<CreateNewCustomer />} />
-        <Route path="/customers/:id" element={<div>123</div>} />
+        <Route path="/:id" element={<CustomerDetail />} />
         <Route path="/" element={<ListCustomer />} />
       </Routes>
     </>

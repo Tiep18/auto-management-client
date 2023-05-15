@@ -8,7 +8,7 @@ import { faSignOut } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 
 const Header = () => {
-  const { pathname } = useLocation()
+  const { pathname, state } = useLocation()
   const currentUser = useSelector((state) => state.auth.currentUser)
   const items = useMemo(() => {
     const arr = pathname.split('/')
@@ -19,7 +19,7 @@ const Header = () => {
       return {
         title: (
           <Link className="!text-inherit" to={link}>
-            {mapPathToBreadcrumb[path] || path}
+            {mapPathToBreadcrumb[path] || state?.breadcrumb || path}
           </Link>
         ),
       }
@@ -36,7 +36,7 @@ const Header = () => {
     // }
 
     // return res
-  }, [pathname])
+  }, [pathname, state?.breadcrumb])
 
   const handleLogout = () => {
     localStorage.removeItem('_at')

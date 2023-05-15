@@ -1,6 +1,7 @@
 import { Button, Form, Input, notification } from 'antd'
 import customerService from '../../../../api/customerService'
 import { useForm } from 'antd/es/form/Form'
+import { useDispatch } from 'react-redux'
 const layout = {
   labelCol: {
     span: 3,
@@ -21,6 +22,7 @@ const validateMessages = {
 
 const CreateNewCustomer = () => {
   const [form] = useForm()
+
   const onFinish = async (values) => {
     try {
       const res = await customerService.createCustomer(values)

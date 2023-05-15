@@ -1,20 +1,24 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import customerService from '../../api/customerService'
 import { notification } from 'antd'
-import { updateQuery } from './customerSlice'
 
 export const getAllCustomerThunk = createAsyncThunk(
   'customer/getAllCustomer',
   async (payload, thunkAPI) => {
     try {
       const { page, search, limit } = thunkAPI.getState().customer
-      thunkAPI.dispatch(updateQuery({ search }))
-      const data = await customerService.getAllCustomers(
-        payload || { page, search, limit }
-      )
+      const data = await customerService.getAllCustomers({
+        page: payload?.page || page,
+        search: payload?.search || search,
+        limit: payload?.limit || limit,
+      })
       return data
     } catch (err) {
-      thunkAPI.rejectWithValue(err.message)
+      notification.error({
+        message: err.message || 'Failed to get customers',
+      })
+      thunkAPI.rejectWithValue(err)
+      throw err
     }
   }
 )
@@ -26,7 +30,11 @@ export const getCustomerDetails = createAsyncThunk(
       const data = await customerService.getCustomerById(id)
       return data
     } catch (err) {
-      thunkAPI.rejectWithValue(err.message)
+      notification.error({
+        message: err.message || 'Failed to get customer details',
+      })
+      thunkAPI.rejectWithValue(err)
+      throw err
     }
   }
 )
@@ -35,10 +43,17 @@ export const updateCustomerThunk = createAsyncThunk(
   'customer/updateCustomer',
   async (payload, thunkAPI) => {
     try {
-      await customerService.updateCustomer(payload.id, payload.data)
+      const res = await customerService.updateCustomer(payload.id, payload.data)
+      notification.success({
+        message: res?.message || 'Update customer successfully',
+      })
       return thunkAPI.dispatch(getCustomerDetails(payload.id))
     } catch (err) {
-      thunkAPI.rejectWithValue(err.message)
+      notification.error({
+        message: err.message || 'Failed to update customer',
+      })
+      thunkAPI.rejectWithValue(err)
+      throw err
     }
   }
 )
@@ -47,26 +62,18 @@ export const deleteCustomerThunk = createAsyncThunk(
   'customer/deleteCustomer',
   async (id, thunkAPI) => {
     try {
-      await customerService.deleteCustomer(id)
+      const res = await customerService.deleteCustomer(id)
+      notification.success({
+        message: res?.message || 'Delete customer successfully',
+      })
       const { page, search, limit } = thunkAPI.getState().customer
       return thunkAPI.dispatch(getAllCustomerThunk({ page, search, limit }))
     } catch (err) {
-      thunkAPI.rejectWithValue(err.message)
+      notification.error({
+        message: err.message || 'Failed to delete customer',
+      })
+      thunkAPI.rejectWithValue(err)
+      throw err
     }
   }
 )
-
-// export const updateQueryThunk = createAsyncThunk(
-//   'customer/updateQuery',
-//   async ({ page, limit, search }, thunkAPI) => {
-//     const currentState = thunkAPI.getState().customer
-//     thunkAPI.dispatch(
-//       updateQuery({
-//         page: page || currentState.page,
-//         limit: limit || currentState.limit,
-//         search: search || currentState.search,
-//       })
-//     )
-
-//   }
-// )

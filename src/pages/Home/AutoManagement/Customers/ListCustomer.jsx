@@ -1,25 +1,38 @@
-import { Button, Table, Input } from 'antd'
-import React, { useEffect } from 'react'
+import { Button, Table, Input, Popconfirm } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { NavLink } from 'react-router-dom'
-import { getAllCustomerThunk } from '../../../../redux/customer/actions'
+import { Link, NavLink } from 'react-router-dom'
+import {
+  deleteCustomerThunk,
+  getAllCustomerThunk,
+} from '../../../../redux/customer/actions'
+import useDebounce from '../../../../utils/hooks/useDebounce'
 
 const ListCustomer = () => {
   const dispatch = useDispatch()
-  const { customers, page, limit, totalCount, search, loading } = useSelector(
+  const [searchTerm, setSearchTerm] = useState('')
+  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+
+  const { customers, page, limit, totalCount, isLoading } = useSelector(
     (state) => state.customer
   )
 
   useEffect(() => {
-    dispatch(getAllCustomerThunk())
-  }, [dispatch])
+    dispatch(
+      getAllCustomerThunk({
+        page: 1,
+        search: debouncedSearchTerm,
+      })
+    )
+  }, [debouncedSearchTerm, dispatch])
 
   const onSearch = (e) => {
+    setSearchTerm(e.target.value)
+  }
+  const handleChangePage = (page) => {
     dispatch(
       getAllCustomerThunk({
         page,
-        limit,
-        search: e.target.value,
       })
     )
   }
@@ -40,25 +53,29 @@ const ListCustomer = () => {
             className="h-full"
             placeholder="Search by Name or Phone Number"
             onChange={onSearch}
-            value={search}
+            value={searchTerm}
             style={{ width: 400 }}
             size="large"
-            loading={loading}
+            loading={isLoading}
           />
         </div>
       </header>
       <Table
         className="-mx-6 max-w-none"
-        // rowSelection={{
-        //   type: selectionType,
-        //   ...rowSelection,
-        // }}
         columns={[
           {
             title: 'Name',
             dataIndex: 'name',
-            //TODO: Handle later
-            render: (text) => <a>{text}</a>,
+            render: (text, record) => (
+              <Link
+                to={record._id}
+                state={{
+                  breadcrumb: record.name,
+                }}
+              >
+                {text}
+              </Link>
+            ),
           },
           {
             title: 'Phone Number',
@@ -76,19 +93,15 @@ const ListCustomer = () => {
             title: 'Actions',
             dataIndex: 'actions',
             render: (text, record) => (
-              <Button
-                danger
-                size="small"
-                onClick={() =>
-                  // TODO: Handle later
-                  dispatch({
-                    type: 'customer/deleteCustomer',
-                    payload: record,
-                  })
-                }
+              <Popconfirm
+                title="Delete"
+                description="Are you sure you want to delete this customer?"
+                onConfirm={() => dispatch(deleteCustomerThunk(record._id))}
               >
-                Delete
-              </Button>
+                <Button danger size="small">
+                  Delete
+                </Button>
+              </Popconfirm>
             ),
           },
         ]}
@@ -98,9 +111,7 @@ const ListCustomer = () => {
           pageSize: limit,
           current: page,
           total: totalCount,
-          onChange: () => {
-            //TODO: Handle later
-          },
+          onChange: handleChangePage,
         }}
       />
     </div>
