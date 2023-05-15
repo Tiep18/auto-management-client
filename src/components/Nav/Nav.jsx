@@ -4,6 +4,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import logoUrl from '../../assets/logo.png'
 import { useMemo } from 'react'
 import { menuConfig } from '../../utils/config/config'
+import { useSelector } from 'react-redux'
 
 const getItem = ({ path, name, children, icon, parentPath, type }) => {
   const isMenuHeader = type === 'menuHeader'
@@ -36,14 +37,26 @@ const getItem = ({ path, name, children, icon, parentPath, type }) => {
     pathname: parentPath ? `/${parentPath}/${path}` : null,
   }
 }
-const items = menuConfig.map(getItem)
 function Sidenav() {
+  const currentUser = useSelector((state) => state.auth.currentUser)
+  const items = useMemo(() => {
+    return (
+      menuConfig
+        // check if role is admin
+        .filter((item) =>
+          currentUser?.role === 'ADMIN'
+            ? item
+            : item.path !== 'admin-management'
+        )
+        .map(getItem)
+    )
+  }, [currentUser])
   const { pathname } = useLocation()
   const activeKey = useMemo(() => {
     return items
       .reduce((memo, item) => memo.concat(item.children), [])
       .find((child) => pathname.includes(child.pathname))?.key
-  }, [pathname])
+  }, [items, pathname])
   return (
     <Sider
       className="bgc-fa fixed left-0 z-50 h-[100vh] overflow-auto m-0 px-5 ml-5"

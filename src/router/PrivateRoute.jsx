@@ -1,21 +1,27 @@
 import { Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
+import { getProfileThunk } from '../redux/auth/actions'
 
 const PrivateRoute = ({ children }) => {
-  const { user, isLoading } = useSelector((state) => state.auth.user)
-
-  useEffect(() => {}, [])
+  const { currentUser, isLoading } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (currentUser) return
+    dispatch(getProfileThunk())
+  }, [currentUser, dispatch])
 
   if (isLoading)
     return (
-      <Spin tip="Loading" size="large">
-        <div className="content" />
-      </Spin>
+      <div className="w-[100vw] h-[100vh]">
+        <Spin tip="Loading" size="large" wrapperClassName="h-full">
+          <div className="content"></div>
+        </Spin>
+      </div>
     )
 
-  if (!isLoading && !user) return <Navigate to={'/login'} />
+  if (!isLoading && !currentUser) return <Navigate to={'/login'} />
   else return children
 }
 

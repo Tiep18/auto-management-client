@@ -1,4 +1,5 @@
 import axios from 'axios'
+import authService from './authService'
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -6,24 +7,49 @@ const axiosInstance = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-axiosInstance.interceptors.request.use(function (request) {
-  // TODO: mock access token
-  const token =
-    'Bearer ' +
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDU3NWMwODk4ZmVkYjY1MDEzZDY0ZjAiLCJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTY4Mzk4NTI0OCwiZXhwIjoxNjgzOTg4ODQ4fQ.GM0WoJZbWLKfLIcE34zGfzqdIktBtG3Li7hEjfWuRDA'
-  request.headers.Authorization = token
-  return request
-})
+axiosInstance.interceptors.request.use(
+  function (config) {
+    const accessToken = localStorage.getItem('_at')
+    config.headers.Authorization = 'Bearer ' + accessToken
+    return config
+  },
+  function (error) {
+    return Promise.reject(error)
+  }
+)
+
+const getAccessToken = async () => {
+  const refeshToken = localStorage.getItem('_rt')
+  localStorage.setItem('_at', refeshToken)
+  try {
+    const newAccessToken = await authService.refeshToken()
+    return newAccessToken
+  } catch (error) {
+    console.log('Failed to get access token', error)
+  }
+}
 
 axiosInstance.interceptors.response.use(
   function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
     return response.data
   },
-  function (error) {
+  async function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
+    const originalRequest = error.config
+    if (
+      error.response.status === 401 &&
+      error.response.data === 'Invalid token'
+    ) {
+      const token = await getAccessToken()
+      if (token) {
+        localStorage.setItem('_at', token.newAccessToken)
+        originalRequest.headers[
+          'Authorization'
+        ] = `Bearer ${token.newAccessToken}`
+        return axiosInstance(originalRequest)
+      } else window.location.href = `${process.env.VITE_BASE_URL}/login`
+    }
     return Promise.reject(error?.response?.data || error)
   }
 )
