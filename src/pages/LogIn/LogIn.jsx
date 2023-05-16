@@ -4,7 +4,8 @@ import { Button, Form, Input, Typography } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import Loading from '../../components/Loading/Loading'
-import { logInThunk } from '../../redux/auth/actions'
+import { getProfileThunk, logInThunk } from '../../redux/auth/actions'
+import { useEffect } from 'react'
 
 function LogIn() {
   const dipatch = useDispatch()
@@ -13,6 +14,10 @@ function LogIn() {
   const handleSubmit = (e) => {
     dipatch(logInThunk(e))
   }
+  useEffect(() => {
+    if (currentUser) return
+    dipatch(getProfileThunk())
+  }, [])
 
   if (isLoading) return <Loading />
   if (currentUser) return <Navigate to="/" />
