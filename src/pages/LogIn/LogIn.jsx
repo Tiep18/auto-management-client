@@ -1,30 +1,22 @@
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Form, Input, Typography } from 'antd'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate } from 'react-router-dom'
+import Loading from '../../components/Loading/Loading'
 import { logInThunk } from '../../redux/auth/actions'
-import { success, error } from '../../redux/notification/notificationSlice'
 
 function LogIn() {
   const dipatch = useDispatch()
-  const navigate = useNavigate()
+  const { currentUser, isLoading } = useSelector((state) => state.auth)
 
   const handleSubmit = (e) => {
     dipatch(logInThunk(e))
-      .then((result) => {
-        if (result.payload === undefined)
-          dipatch(error('Username or password is not available'))
-
-        if (result.payload) {
-          dipatch(success('Login successfully'))
-          navigate('/')
-        }
-      })
-      .catch((err) => {
-        dipatch(error('Something went wrong'))
-      })
   }
+
+  if (isLoading) return <Loading />
+  if (currentUser) return <Navigate to="/" />
+
   return (
     <div className="flex justify-center h-[100vh] bg-slate-100">
       <div
@@ -37,7 +29,10 @@ function LogIn() {
             name="username"
             rules={[
               { required: true, message: 'Please enter your Username!' },
-              { min: 6, message: 'The username must be at least 6 characters' },
+              {
+                min: 6,
+                message: 'The username must be at least 6 characters',
+              },
             ]}
           >
             <Input
@@ -52,7 +47,10 @@ function LogIn() {
             name="password"
             rules={[
               { required: true, message: 'Please enter your Password!' },
-              { min: 6, message: 'The username must be at least 6 characters' },
+              {
+                min: 6,
+                message: 'The username must be at least 6 characters',
+              },
             ]}
           >
             <Input
