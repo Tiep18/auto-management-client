@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { getProfileThunk, logInThunk } from './actions'
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   currentUser: null,
 }
 
