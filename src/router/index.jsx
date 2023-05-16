@@ -1,6 +1,6 @@
-import { menuConfig } from '../config/config'
 import Home from '../pages/Home/Home'
 import LogIn from '../pages/LogIn/LogIn'
+import { menuConfig } from '../utils/config/config'
 import PrivateRoute from './PrivateRoute'
 
 export const routes = [
@@ -28,7 +28,7 @@ export const routes = [
     children: children.map((child) => {
       const Component = child.component
       return {
-        path: child.path,
+        path: child.path + '/*',
         element: <Component />,
       }
     }),
