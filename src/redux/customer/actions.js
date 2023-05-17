@@ -43,6 +43,7 @@ export const updateCustomerThunk = createAsyncThunk(
   'customer/updateCustomer',
   async (payload, thunkAPI) => {
     try {
+      console.log('pauloader update customer =>>>', payload)
       const res = await customerService.updateCustomer(payload.id, payload.data)
       notification.success({
         message: res?.message || 'Update customer successfully',

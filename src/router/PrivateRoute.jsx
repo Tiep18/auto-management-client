@@ -1,10 +1,11 @@
 import { Spin } from 'antd'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { getProfileThunk } from '../redux/auth/actions'
 
 const PrivateRoute = ({ children }) => {
+  const location = useLocation()
   const { currentUser, isLoading } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -21,7 +22,8 @@ const PrivateRoute = ({ children }) => {
       </div>
     )
 
-  if (!isLoading && !currentUser) return <Navigate to={'/login'} />
+  if (!isLoading && !currentUser)
+    return <Navigate to={'/login'} state={location} />
   else return children
 }
 

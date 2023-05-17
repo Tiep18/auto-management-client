@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import CreateNewCustomer from './CreateNewCustomer'
+import CreateNewCustomer from './CustomerForm'
 import ListCustomer from './ListCustomer'
 import CustomerDetail from './CustomerDetail'
 

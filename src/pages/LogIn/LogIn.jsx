@@ -2,14 +2,15 @@ import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Form, Input, Typography } from 'antd'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { logInThunk } from '../../redux/auth/actions'
 import { success, error } from '../../redux/notification/notificationSlice'
 
 function LogIn() {
   const dipatch = useDispatch()
+  const { state } = useLocation()
   const navigate = useNavigate()
-
+  console.log('state >>>>', state)
   const handleSubmit = (e) => {
     dipatch(logInThunk(e))
       .then((result) => {
@@ -18,7 +19,8 @@ function LogIn() {
 
         if (result.payload) {
           dipatch(success('Login successfully'))
-          navigate('/')
+          if (state) navigate(state)
+          else navigate('/')
         }
       })
       .catch((err) => {
