@@ -19,7 +19,9 @@ function LogIn() {
     dipatch(getProfileThunk())
   }, [])
 
-  if (isLoading) return <Loading />
+  const check = localStorage.getItem('_at')
+
+  if (isLoading && check) return <Loading />
   if (currentUser) return <Navigate to="/" />
 
   return (
