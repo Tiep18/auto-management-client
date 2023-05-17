@@ -29,78 +29,78 @@ const CustomerDetail = () => {
   }, [customerDetail, navigate, state?.breadcrumb])
   if (!id || (!customerDetail && !isLoading)) {
     return <NotFound />
-  } else
-    return (
-      <Row gutter={32} className="pb-6">
-        <Col span={15}>
-          <CustomerForm customerDetail={customerDetail} type="update" />
-          <div className="p-6 rounded-xl bg-white shadow-lg mt-8 ">
-            <h2 className="">Cars</h2>
-            <Table
-              className="-mx-6 max-w-none"
-              columns={[
-                {
-                  title: 'Plate',
-                  dataIndex: 'plateNumber',
-                  render: (text, record) => (
-                    <Link
-                      to={`/auto-management/cars/${record.carId}}`}
-                      state={{
-                        breadcrumb: text,
-                      }}
-                    >
-                      {text}
-                    </Link>
-                  ),
-                },
-                {
-                  title: 'Car ID',
-                  dataIndex: 'CarId',
-                },
-              ]}
-              rowKey={(row) => row.carId}
-              dataSource={customerDetail?.cars || []}
-            />
-          </div>
-        </Col>
-        <Col span={9}>
-          <div className="p-6 rounded-xl bg-white shadow-lg h-full ">
-            <h2 className="mb-5">Orders</h2>
+  }
+  return (
+    <Row gutter={32} className="pb-6">
+      <Col span={15}>
+        <CustomerForm customerDetail={customerDetail} type="update" />
+        <div className="p-6 rounded-xl bg-white shadow-lg mt-8 ">
+          <h2 className="">Cars</h2>
+          <Table
+            className="-mx-6 max-w-none"
+            columns={[
+              {
+                title: 'Plate',
+                dataIndex: 'plateNumber',
+                render: (text, record) => (
+                  <Link
+                    to={`/auto-management/cars/${record.carId}}`}
+                    state={{
+                      breadcrumb: text,
+                    }}
+                  >
+                    {text}
+                  </Link>
+                ),
+              },
+              {
+                title: 'Car ID',
+                dataIndex: 'CarId',
+              },
+            ]}
+            rowKey={(row) => row.carId}
+            dataSource={customerDetail?.cars || []}
+          />
+        </div>
+      </Col>
+      <Col span={9}>
+        <div className="p-6 rounded-xl bg-white shadow-lg h-full ">
+          <h2 className="mb-5">Orders</h2>
 
-            <Timeline
-              pending="Recording..."
-              // TODO: mock UI
-              items={[
-                {
-                  children: (
-                    <Link to={'/'}>
-                      <h5 className="font-semibold text-sm mb-0">
-                        $2,400 - Redesign store
-                      </h5>
-                      <span className="text-[12px] text-[#8c8c8c]">
-                        09 JUN 7:20 PM
-                      </span>
-                    </Link>
-                  ),
-                },
-                {
-                  children: (
-                    <Link to={'/'}>
-                      <h5 className="font-semibold text-sm mb-0">
-                        $2,400 - Redesign store
-                      </h5>
-                      <span className="text-[12px] text-[#8c8c8c]">
-                        09 JUN 7:20 PM
-                      </span>
-                    </Link>
-                  ),
-                },
-              ]}
-            />
-          </div>
-        </Col>
-      </Row>
-    )
+          <Timeline
+            pending="Recording..."
+            // TODO: mock UI
+            items={[
+              {
+                children: (
+                  <Link to={'/'}>
+                    <h5 className="font-semibold text-sm mb-0">
+                      $2,400 - Redesign store
+                    </h5>
+                    <span className="text-[12px] text-[#8c8c8c]">
+                      09 JUN 7:20 PM
+                    </span>
+                  </Link>
+                ),
+              },
+              {
+                children: (
+                  <Link to={'/'}>
+                    <h5 className="font-semibold text-sm mb-0">
+                      $2,400 - Redesign store
+                    </h5>
+                    <span className="text-[12px] text-[#8c8c8c]">
+                      09 JUN 7:20 PM
+                    </span>
+                  </Link>
+                ),
+              },
+            ]}
+          />
+        </div>
+      </Col>
+    </Row>
+  )
 }
 
 export default CustomerDetail
