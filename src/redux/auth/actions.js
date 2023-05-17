@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import authService from '../../api/authService'
+import { success, error } from '../notification/notificationSlice'
 
 export const logInThunk = createAsyncThunk(
   'auth/login',
@@ -9,9 +10,14 @@ export const logInThunk = createAsyncThunk(
       localStorage.setItem('_at', data.accessToken)
       localStorage.setItem('_rt', data.refeshToken)
       const currentUser = await authService.getProfile()
+
+      if (currentUser) {
+        thunkAPI.dispatch(success('Login successfully'))
+      }
+
       return currentUser
-    } catch (error) {
-      thunkAPI.rejectWithValue(error.response)
+    } catch (err) {
+      thunkAPI.dispatch(error('Username or password is not available'))
     }
   }
 )
@@ -23,7 +29,7 @@ export const getProfileThunk = createAsyncThunk(
       const currentUser = await authService.getProfile()
       return currentUser
     } catch (error) {
-      thunkAPI.rejectWithValue(error.response)
+      thunkAPI.dispatch(error('Something went wrong'))
     }
   }
 )

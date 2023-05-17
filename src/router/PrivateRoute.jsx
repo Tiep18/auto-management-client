@@ -1,7 +1,7 @@
-import { Spin } from 'antd'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, useLocation } from 'react-router-dom'
+import Loading from '../components/Loading/Loading'
 import { getProfileThunk } from '../redux/auth/actions'
 
 const PrivateRoute = ({ children }) => {
@@ -13,14 +13,7 @@ const PrivateRoute = ({ children }) => {
     dispatch(getProfileThunk())
   }, [currentUser, dispatch])
 
-  if (isLoading)
-    return (
-      <div className="w-[100vw] h-[100vh]">
-        <Spin tip="Loading" size="large" wrapperClassName="h-full">
-          <div className="content"></div>
-        </Spin>
-      </div>
-    )
+  if (isLoading) return <Loading />
 
   if (!isLoading && !currentUser)
     return <Navigate to={'/login'} state={location} />

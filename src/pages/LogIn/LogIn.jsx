@@ -1,32 +1,28 @@
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Form, Input, Typography } from 'antd'
-import { useDispatch } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { logInThunk } from '../../redux/auth/actions'
-import { success, error } from '../../redux/notification/notificationSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate, useLocation } from 'react-router-dom'
+import Loading from '../../components/Loading/Loading'
+import { getProfileThunk, logInThunk } from '../../redux/auth/actions'
+import { useEffect } from 'react'
 
 function LogIn() {
   const dipatch = useDispatch()
+  const { currentUser, isLoading } = useSelector((state) => state.auth)
   const { state } = useLocation()
-  const navigate = useNavigate()
-  console.log('state >>>>', state)
   const handleSubmit = (e) => {
     dipatch(logInThunk(e))
-      .then((result) => {
-        if (result.payload === undefined)
-          dipatch(error('Username or password is not available'))
-
-        if (result.payload) {
-          dipatch(success('Login successfully'))
-          if (state) navigate(state)
-          else navigate('/')
-        }
-      })
-      .catch((err) => {
-        dipatch(error('Something went wrong'))
-      })
   }
+  useEffect(() => {
+    if (currentUser) return
+    dipatch(getProfileThunk())
+  }, [currentUser, dipatch])
+
+  if (isLoading) return <Loading />
+
+  if (currentUser) return <Navigate to={state || '/'} />
+
   return (
     <div className="flex justify-center h-[100vh] bg-slate-100">
       <div
@@ -39,7 +35,10 @@ function LogIn() {
             name="username"
             rules={[
               { required: true, message: 'Please enter your Username!' },
-              { min: 6, message: 'The username must be at least 6 characters' },
+              {
+                min: 6,
+                message: 'The username must be at least 6 characters',
+              },
             ]}
           >
             <Input
@@ -54,7 +53,10 @@ function LogIn() {
             name="password"
             rules={[
               { required: true, message: 'Please enter your Password!' },
-              { min: 6, message: 'The username must be at least 6 characters' },
+              {
+                min: 6,
+                message: 'The username must be at least 6 characters',
+              },
             ]}
           >
             <Input
