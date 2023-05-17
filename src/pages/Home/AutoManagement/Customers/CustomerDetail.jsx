@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import NotFound from '../../../../components/NotFound/NotFound'
 import { getCustomerDetails } from '../../../../redux/customer/actions'
-import { Col, Form, Row, Table, Timeline } from 'antd'
+import { Col, Row, Table, Timeline } from 'antd'
 import CustomerForm from './CustomerForm'
 
 const CustomerDetail = () => {
@@ -44,7 +44,7 @@ const CustomerDetail = () => {
                   dataIndex: 'plateNumber',
                   render: (text, record) => (
                     <Link
-                      to={`/auto-management/${record.carId}}`}
+                      to={`/auto-management/cars/${record.carId}}`}
                       state={{
                         breadcrumb: text,
                       }}
