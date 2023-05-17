@@ -19,9 +19,11 @@ function LogIn() {
     dipatch(getProfileThunk())
   }, [currentUser, dipatch])
 
-  if (isLoading) return <Loading />
+  const check = localStorage.getItem('_at')
 
+  if (isLoading && check) return <Loading />
   if (currentUser) return <Navigate to={state || '/'} />
+
 
   return (
     <div className="flex justify-center h-[100vh] bg-slate-100">

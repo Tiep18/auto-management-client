@@ -20,6 +20,7 @@ axiosInstance.interceptors.request.use(
 
 const getAccessToken = async () => {
   const refeshToken = localStorage.getItem('_rt')
+  if (!refeshToken) return
   localStorage.setItem('_at', refeshToken)
   try {
     const newAccessToken = await authService.refeshToken()
@@ -42,7 +43,7 @@ axiosInstance.interceptors.response.use(
       error.response.data === 'Invalid token'
     ) {
       const token = await getAccessToken()
-      if (token) {
+      if (token.newAccessToken) {
         localStorage.setItem('_at', token.newAccessToken)
         originalRequest.headers[
           'Authorization'

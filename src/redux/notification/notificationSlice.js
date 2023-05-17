@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   type: null,
   description: '',
+  random: Math.random(),
 }
 
 const notificationSlice = createSlice({
@@ -12,10 +13,12 @@ const notificationSlice = createSlice({
     success: (state, action) => {
       state.type = 'success'
       state.description = action.payload
+      state.random = Math.random()
     },
     error: (state, action) => {
       state.type = 'error'
       state.description = action.payload
+      state.random = Math.random()
     },
   },
 })
