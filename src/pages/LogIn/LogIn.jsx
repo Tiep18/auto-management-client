@@ -2,7 +2,7 @@ import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Form, Input, Typography } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import Loading from '../../components/Loading/Loading'
 import { getProfileThunk, logInThunk } from '../../redux/auth/actions'
 import { useEffect } from 'react'
@@ -10,17 +10,18 @@ import { useEffect } from 'react'
 function LogIn() {
   const dipatch = useDispatch()
   const { currentUser, isLoading } = useSelector((state) => state.auth)
-
+  const { state } = useLocation()
   const handleSubmit = (e) => {
     dipatch(logInThunk(e))
   }
   useEffect(() => {
     if (currentUser) return
     dipatch(getProfileThunk())
-  }, [])
+  }, [currentUser, dipatch])
 
   if (isLoading) return <Loading />
-  if (currentUser) return <Navigate to="/" />
+
+  if (currentUser) return <Navigate to={state || '/'} />
 
   return (
     <div className="flex justify-center h-[100vh] bg-slate-100">

@@ -1,6 +1,9 @@
 import { Button, Form, Input, notification } from 'antd'
 import customerService from '../../../../api/customerService'
 import { useForm } from 'antd/es/form/Form'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { updateCustomerThunk } from '../../../../redux/customer/actions'
 const layout = {
   labelCol: {
     span: 3,
@@ -19,26 +22,41 @@ const validateMessages = {
   },
 }
 
-const CreateNewCustomer = () => {
+const messages = {
+  create: {
+    success: 'Customer has been created',
+    error: 'Failed to create customer, please try again',
+  },
+  update: {
+    success: 'Customer has been updated',
+    error: 'Failed to update customer, please try again',
+  },
+}
+
+const CustomerForm = ({ type = 'create', customerDetail }) => {
   const [form] = useForm()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (!customerDetail) return
+    form.setFieldsValue(customerDetail)
+  }, [customerDetail, form])
 
   const onFinish = async (values) => {
     try {
-      const res = await customerService.createCustomer(values)
-
-      notification.success({
-        message: res.message || 'Customer has been created',
-      })
-      form.resetFields()
+      if (type === 'create') {
+        const res = await customerService.createCustomer(values)
+        notification.success({
+          message: res.message || messages[type].success,
+        })
+        form.resetFields()
+      } else if (type === 'update') {
+        dispatch(updateCustomerThunk({ data: values, id: customerDetail._id }))
+      }
     } catch (err) {
-      if (err.message) {
-        notification.error({
-          message: err.message,
-        })
-      } else
-        notification.error({
-          message: 'Failed to create customer, please try again',
-        })
+      notification.error({
+        message: err?.message || messages[type].error,
+      })
     }
   }
   return (
@@ -99,10 +117,21 @@ const CreateNewCustomer = () => {
         }}
       >
         <Button type="primary" htmlType="submit">
-          Submit
+          {type === 'create' ? 'Submit' : 'Update'}
         </Button>
+        {type === 'update' && (
+          <Button
+            className="ml-4"
+            type="default"
+            onClick={() => {
+              form.setFieldsValue(customerDetail)
+            }}
+          >
+            Reset
+          </Button>
+        )}
       </Form.Item>
     </Form>
   )
 }
-export default CreateNewCustomer
+export default CustomerForm
