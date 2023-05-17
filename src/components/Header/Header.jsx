@@ -1,30 +1,42 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { Header as AntdHeader } from 'antd/es/layout/layout'
 import { Breadcrumb } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRightToBracket, faSignOut } from '@fortawesome/free-solid-svg-icons'
-import { menuConfig } from '../../config/config'
+import { mapPathToBreadcrumb } from '../../utils/config/config'
+import { faSignOut } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 
 const Header = () => {
-  const { pathname } = useLocation()
+  const { pathname, state } = useLocation()
   const currentUser = useSelector((state) => state.auth.currentUser)
   const items = useMemo(() => {
     const arr = pathname.split('/')
     arr.shift()
-    let res = []
-    let temp = JSON.parse(JSON.stringify(menuConfig))
-    while (arr.length > 0 && temp) {
-      const i = temp?.find((item) => item.path === arr[0])
-      arr.shift()
-      if (!i) return {}
-      res.push({ title: i.name })
-      temp = i?.children
-    }
-
+    let link = ''
+    const res = arr.map((path) => {
+      link = link + '/' + path
+      return {
+        title: (
+          <Link className="!text-inherit" to={link}>
+            {mapPathToBreadcrumb[path] || state?.breadcrumb || path}
+          </Link>
+        ),
+      }
+    })
     return res
-  }, [pathname])
+    // let res = []
+    // let temp = JSON.parse(JSON.stringify(menuConfig))
+    // while (arr.length > 0 && temp) {
+    //   const i = temp?.find((item) => item.path === arr[0])
+    //   arr.shift()
+    //   if (!i) return {}
+    //   res.push({ title: i.name })
+    //   temp = i?.children
+    // }
+
+    // return res
+  }, [pathname, state?.breadcrumb])
 
   const handleLogout = () => {
     localStorage.removeItem('_at')

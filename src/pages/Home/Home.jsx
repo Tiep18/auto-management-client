@@ -11,7 +11,7 @@ const Home = () => {
       <Nav />
       <Layout className="bgc-fa">
         <Header></Header>
-        <Content className="bgc-fa">
+        <Content className="bgc-fa px-6">
           <Outlet />
         </Content>
       </Layout>

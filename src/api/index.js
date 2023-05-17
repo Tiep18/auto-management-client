@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest)
       } else window.location.href = `${process.env.VITE_BASE_URL}/login`
     }
-    return Promise.reject(error)
+    return Promise.reject(error?.response?.data || error)
   }
 )
 export default axiosInstance
