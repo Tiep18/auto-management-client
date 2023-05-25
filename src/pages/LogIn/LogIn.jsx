@@ -24,7 +24,6 @@ function LogIn() {
   if (isLoading && check) return <Loading />
   if (currentUser) return <Navigate to={state || '/'} />
 
-
   return (
     <div className="flex justify-center h-[100vh] bg-slate-100">
       <div

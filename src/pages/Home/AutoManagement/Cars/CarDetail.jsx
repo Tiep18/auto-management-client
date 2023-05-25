@@ -1,66 +1,40 @@
+import { Col, Row, Timeline } from 'antd'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import NotFound from '../../../../components/NotFound/NotFound'
-import { getCustomerDetails } from '../../../../redux/customer/actions'
-import { Col, Row, Table, Timeline } from 'antd'
-import CustomerForm from './CustomerForm'
+import { getCarDetails } from '../../../../redux/car/actions'
+import CarForm from './CarForm'
 
-const CustomerDetail = () => {
+const CarDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { state } = useLocation()
   const dispatch = useDispatch()
-  const { isLoading, customerDetail } = useSelector((state) => state.customer)
+  const { isLoading, carDetail } = useSelector((state) => state.car)
+  const customerName = carDetail?.customer.customerName
+  const newCarDetail = { ...carDetail, customer: customerName }
   useEffect(() => {
     if (!id) return
-    dispatch(getCustomerDetails(id))
+    dispatch(getCarDetails(id))
   }, [dispatch, id])
 
   useEffect(() => {
-    if (!customerDetail || state?.breadcrumb) return
+    if (!carDetail) return
     navigate('.', {
       replace: true,
       state: {
-        breadcrumb: customerDetail.name,
+        breadcrumb: carDetail.plateNumber,
       },
     })
-  }, [customerDetail, navigate, state?.breadcrumb])
-  if (!id || (!customerDetail && !isLoading)) {
+  }, [carDetail, navigate, state?.breadcrumb])
+  if (!id || (!carDetail && !isLoading)) {
     return <NotFound />
   }
   return (
     <Row gutter={32} className="pb-6">
       <Col span={15}>
-        <CustomerForm customerDetail={customerDetail} type="update" />
-        <div className="p-6 rounded-xl bg-white shadow-lg mt-8 ">
-          <h2 className="">Cars</h2>
-          <Table
-            className="-mx-6 max-w-none"
-            columns={[
-              {
-                title: 'Plate',
-                dataIndex: 'plateNumber',
-                render: (text, record) => (
-                  <Link
-                    to={`/auto-management/cars/${record.carId}`}
-                    state={{
-                      breadcrumb: text,
-                    }}
-                  >
-                    {text}
-                  </Link>
-                ),
-              },
-              {
-                title: 'Car ID',
-                dataIndex: 'CarId',
-              },
-            ]}
-            rowKey={(row) => row.carId}
-            dataSource={customerDetail?.cars || []}
-          />
-        </div>
+        <CarForm carDetail={newCarDetail} type="update" />
       </Col>
       <Col span={9}>
         <div className="p-6 rounded-xl bg-white shadow-lg h-full ">
@@ -102,4 +76,4 @@ const CustomerDetail = () => {
   )
 }
 
-export default CustomerDetail
+export default CarDetail
