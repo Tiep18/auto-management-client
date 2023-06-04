@@ -1,8 +1,10 @@
-import { Col, Row, Timeline } from 'antd'
-import React, { useEffect } from 'react'
+import { Col, Row } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import orderService from '../../../../api/orderService'
 import NotFound from '../../../../components/NotFound/NotFound'
+import OrdersTimeline from '../../../../components/OrdersTimeline/OrdersTimeline'
 import { getCarDetails } from '../../../../redux/car/actions'
 import CarForm from './CarForm'
 
@@ -11,13 +13,35 @@ const CarDetail = () => {
   const navigate = useNavigate()
   const { state } = useLocation()
   const dispatch = useDispatch()
+  const [orderOptions, setOrderOptions] = useState([])
   const { isLoading, carDetail } = useSelector((state) => state.car)
   const customerName = carDetail?.customer.customerName
   const newCarDetail = { ...carDetail, customer: customerName }
+
   useEffect(() => {
     if (!id) return
     dispatch(getCarDetails(id))
   }, [dispatch, id])
+
+  useEffect(() => {
+    if (!carDetail?.plateNumber) return
+    const controller = new AbortController()
+    const getOrders = async () => {
+      try {
+        const res = await orderService.getAllOrders({
+          page: 1,
+          limit: 100,
+          search: carDetail?.plateNumber,
+          signal: controller.signal,
+        })
+        setOrderOptions(res.data)
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
+    getOrders()
+    return () => controller.abort()
+  }, [carDetail?.plateNumber])
 
   useEffect(() => {
     if (!carDetail) return
@@ -39,37 +63,7 @@ const CarDetail = () => {
       <Col span={9}>
         <div className="p-6 rounded-xl bg-white shadow-lg h-full ">
           <h2 className="mb-5">Orders</h2>
-
-          <Timeline
-            pending="Recording..."
-            // TODO: mock UI
-            items={[
-              {
-                children: (
-                  <Link to={'/'}>
-                    <h5 className="font-semibold text-sm mb-0">
-                      $2,400 - Redesign store
-                    </h5>
-                    <span className="text-[12px] text-[#8c8c8c]">
-                      09 JUN 7:20 PM
-                    </span>
-                  </Link>
-                ),
-              },
-              {
-                children: (
-                  <Link to={'/'}>
-                    <h5 className="font-semibold text-sm mb-0">
-                      $2,400 - Redesign store
-                    </h5>
-                    <span className="text-[12px] text-[#8c8c8c]">
-                      09 JUN 7:20 PM
-                    </span>
-                  </Link>
-                ),
-              },
-            ]}
-          />
+          <OrdersTimeline orderOptions={orderOptions} />
         </div>
       </Col>
     </Row>
