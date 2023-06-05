@@ -24,15 +24,13 @@ const CarDetail = () => {
   }, [dispatch, id])
 
   useEffect(() => {
-    if (!carDetail?.plateNumber) return
-    const controller = new AbortController()
+    if (!carDetail?.plateNumber || carDetail?._id !== id) return
     const getOrders = async () => {
       try {
         const res = await orderService.getAllOrders({
           page: 1,
           limit: 100,
           search: carDetail?.plateNumber,
-          signal: controller.signal,
         })
         setOrderOptions(res.data)
       } catch (error) {
@@ -40,8 +38,7 @@ const CarDetail = () => {
       }
     }
     getOrders()
-    return () => controller.abort()
-  }, [carDetail?.plateNumber])
+  }, [carDetail?.plateNumber, carDetail?._id, id])
 
   useEffect(() => {
     if (!carDetail) return

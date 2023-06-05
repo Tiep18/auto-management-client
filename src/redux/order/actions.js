@@ -12,7 +12,6 @@ export const getAllOrderThunk = createAsyncThunk(
         limit: payload?.limit || limit,
         search: payload?.search || search,
         status: payload?.status || {},
-        signal: thunkAPI.signal,
       })
       return data
     } catch (err) {
