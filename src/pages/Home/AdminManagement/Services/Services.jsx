@@ -7,6 +7,7 @@ import {
   getAllServiceThunk,
   getServiceTypesThunk,
 } from '../../../../redux/service/actions'
+import ServicesForm from './ServicesForm'
 const { Panel } = Collapse
 
 const text = `
@@ -21,8 +22,8 @@ const Services = () => {
   useEffect(() => {
     if (services.length === 0)
       dispatch(getAllServiceThunk({ page: 1, limit: 9999 }))
-    if (types.length === 0) dispatch(getServiceTypesThunk())
-  }, [dispatch, services.length, types.length])
+  }, [dispatch, services.length])
+
   const panelStyle = {
     marginBottom: 24,
     background: token.colorFillAlter,
@@ -36,19 +37,20 @@ const Services = () => {
         accordion
         bordered={false}
         defaultActiveKey={types[0]}
+        destroyInactivePanel
         expandIcon={({ isActive }) => (
           <CaretRightOutlined rotate={isActive ? 90 : 0} />
         )}
         style={{ background: token.colorBgContainer }}
       >
-        {types.map((name) => (
+        {Object.keys(services).map((type) => (
           <Panel
-            header={name}
+            header={type}
             className="font-bold"
-            key={camelize(name)}
+            key={camelize(type)}
             style={panelStyle}
           >
-            <p>{text}</p>
+            <ServicesForm type={type} services={services[type]} />
           </Panel>
         ))}
       </Collapse>

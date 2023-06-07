@@ -1,59 +1,46 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getAllServiceThunk,
-  getServiceTypesThunk,
-} from '../../../../redux/service/actions'
-import { Spin, Tabs } from 'antd'
+import { getAllServiceThunk } from '../../../../redux/service/actions'
+import { Tabs } from 'antd'
 import { camelize } from '../../../../utils'
 import * as icons from '../../../.././assets/icons'
 import TableService from './TableService'
 const Services = () => {
   const dispatch = useDispatch()
-  const { isLoading, services, types } = useSelector((state) => state.service)
-  const [serviceTypes, serServiceTypes] = useState([])
+  const { services } = useSelector((state) => state.service)
 
-  useEffect(() => {
-    if (types.length === 0) return
-    serServiceTypes(() =>
-      types.map((item) => ({
-        label: icons[camelize(item)] ? (
+  const items = useMemo(() => {
+    if (!services) return []
+    return Object.keys(services).map((type) => {
+      return {
+        label: icons[camelize(type)] ? (
           <span className="flex gap-2 items-center">
             <img
-              src={icons[camelize(item)]}
-              alt={item}
+              src={icons[camelize(type)]}
+              alt={type}
               width={16}
               height={16}
             />
-            {item}
+            {type}
           </span>
         ) : (
-          item
+          type
         ),
-        key: item,
-        slug: camelize(item),
-        icon: icons[camelize(item)] || null,
-        children: isLoading ? (
-          <div className="w-full">
-            <Spin tip="Loading" size="large" wrapperClassName="h-full">
-              <div className="content"></div>
-            </Spin>
-          </div>
-        ) : (
-          <TableService data={services?.filter((i) => i.type === item) || []} />
-        ),
-      }))
-    )
-  }, [isLoading, services, types])
+        key: type,
+        slug: camelize(type),
+        icon: icons[camelize(type)] || null,
+        children: <TableService data={services[type] || []} />,
+      }
+    }, [])
+  }, [services])
 
   useEffect(() => {
     dispatch(getAllServiceThunk({ page: 1, limit: 9999 }))
-    dispatch(getServiceTypesThunk())
   }, [dispatch])
 
   return (
     <div className="p-6 rounded-xl bg-white shadow-lg">
-      <Tabs items={serviceTypes} type="card"></Tabs>
+      <Tabs items={items} type="card"></Tabs>
     </div>
   )
 }

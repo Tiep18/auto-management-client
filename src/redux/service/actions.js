@@ -14,6 +14,12 @@ export const getAllServiceThunk = createAsyncThunk(
         limit: payload?.limit || limit,
         type: payload?.type || type,
       })
+      const { data: services } = data
+      data.data = services.reduce((acc, item) => {
+        if (acc[item.type]) acc[item.type].push(item)
+        else acc[item.type] = [item]
+        return acc
+      }, {})
       return data
     } catch (err) {
       notification.error({
@@ -41,25 +47,24 @@ export const getServiceTypesThunk = createAsyncThunk(
   }
 )
 
-// export const updateCustomerThunk = createAsyncThunk(
-//   'customer/updateCustomer',
-//   async (payload, thunkAPI) => {
-//     try {
-//       console.log('pauloader update customer =>>>', payload)
-//       const res = await customerService.updateCustomer(payload.id, payload.data)
-//       notification.success({
-//         message: res?.message || 'Update customer successfully',
-//       })
-//       return thunkAPI.dispatch(getCustomerDetails(payload.id))
-//     } catch (err) {
-//       notification.error({
-//         message: err.message || 'Failed to update customer',
-//       })
-//       thunkAPI.rejectWithValue(err)
-//       throw err
-//     }
-//   }
-// )
+export const updateServiceThunk = createAsyncThunk(
+  'customer/updateService',
+  async (payload, thunkAPI) => {
+    try {
+      const res = await serviceService.updateService(payload)
+      notification.success({
+        message: res?.message || 'Update customer successfully',
+      })
+      return thunkAPI.dispatch(getAllServiceThunk())
+    } catch (err) {
+      notification.error({
+        message: err.message || 'Failed to update service',
+      })
+      thunkAPI.rejectWithValue(err)
+      throw err
+    }
+  }
+)
 
 export const deleteCustomerThunk = createAsyncThunk(
   'customer/deleteCustomer',

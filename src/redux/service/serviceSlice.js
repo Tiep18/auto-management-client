@@ -3,6 +3,7 @@ import {
   deleteCustomerThunk,
   getAllServiceThunk,
   getServiceTypesThunk,
+  updateServiceThunk,
 } from './actions'
 
 const initialState = {
@@ -58,15 +59,15 @@ const serviceSlice = createSlice({
     //   state.isLoading = false
     // })
 
-    // builder.addCase(updateCustomerThunk.pending, (state) => {
-    //   state.isLoading = true
-    // })
-    // builder.addCase(updateCustomerThunk.fulfilled, (state) => {
-    //   state.isLoading = false
-    // })
-    // builder.addCase(updateCustomerThunk.rejected, (state) => {
-    //   state.isLoading = false
-    // })
+    builder.addCase(updateServiceThunk.pending, (state) => {
+      state.isLoading = true
+    })
+    builder.addCase(updateServiceThunk.fulfilled, (state) => {
+      state.isLoading = false
+    })
+    builder.addCase(updateServiceThunk.rejected, (state) => {
+      state.isLoading = false
+    })
 
     builder.addCase(deleteCustomerThunk.pending, (state) => {
       state.isLoading = true

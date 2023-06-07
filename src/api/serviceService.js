@@ -19,8 +19,8 @@ const serviceService = {
     return axiosInstance.get(`/api/services/${id}`)
   },
 
-  updateService: async (id, payload) => {
-    return axiosInstance.put(`/api/services/${id}`, payload)
+  updateService: async (payload) => {
+    return axiosInstance.put(`/api/services/`, payload)
   },
 
   deleteService: async (id) => {
