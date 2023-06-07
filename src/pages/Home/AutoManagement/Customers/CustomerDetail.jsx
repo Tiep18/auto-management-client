@@ -12,7 +12,6 @@ const CustomerDetail = () => {
   const { state } = useLocation()
   const dispatch = useDispatch()
   const { isLoading, customerDetail } = useSelector((state) => state.customer)
-
   useEffect(() => {
     if (!id) return
     dispatch(getCustomerDetails(id))
@@ -44,7 +43,7 @@ const CustomerDetail = () => {
                 dataIndex: 'plateNumber',
                 render: (text, record) => (
                   <Link
-                    to={`/auto-management/cars/${record.carId}}`}
+                    to={`/auto-management/cars/${record.carId}`}
                     state={{
                       breadcrumb: text,
                     }}
