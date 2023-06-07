@@ -98,7 +98,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       if (result?.data.length > 0) {
         const options = result.data.map((item) => ({
           value: item.cost,
-          label: item.name,
+          label: item.name + ': ' + item.cost + '$',
           key: item._id,
         }))
         setServiceOption(options)

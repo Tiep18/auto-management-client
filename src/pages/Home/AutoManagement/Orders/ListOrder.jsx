@@ -45,7 +45,7 @@ const ListOrder = () => {
   }
   return (
     <div className="p-6 rounded-xl bg-white shadow-lg">
-      <header className="mb-5 flex justify-between items-center">
+      <header className="mb-5 flex items-center">
         <NavLink to="create-new-order">
           <Button
             type="primary"
@@ -55,7 +55,7 @@ const ListOrder = () => {
             Create New Order
           </Button>
         </NavLink>
-        <div className="h-[40px] flex w-[400px]">
+        <div className="h-[40px] flex w-[400px] ml-auto mr-6">
           <Input.Search
             className="h-full"
             placeholder="Search by Order name, Plate number or Customer"
@@ -66,27 +66,29 @@ const ListOrder = () => {
             loading={isLoading}
           />
         </div>
+        <div className="flex justify-end">
+          <Radio.Group
+            onChange={handleStatusChange}
+            optionType="button"
+            size="large"
+            options={[
+              {
+                label: 'ALL',
+                value: 'ALL',
+              },
+              {
+                label: 'WORKING',
+                value: 'WORKING',
+              },
+              {
+                label: 'DONE',
+                value: 'DONE',
+              },
+            ]}
+          />
+        </div>
       </header>
-      <div className="flex justify-end">
-        <Radio.Group
-          onChange={handleStatusChange}
-          optionType="button"
-          options={[
-            {
-              label: 'ALL',
-              value: 'ALL',
-            },
-            {
-              label: 'WORKING',
-              value: 'WORKING',
-            },
-            {
-              label: 'DONE',
-              value: 'DONE',
-            },
-          ]}
-        />
-      </div>
+
       <Table
         className="-mx-6 max-w-none"
         columns={[
