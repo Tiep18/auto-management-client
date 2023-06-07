@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
     // Do something with response error
     const originalRequest = error.config
     if (
-      error.response.status === 401 &&
+      error.response?.status === 401 &&
       error.response.data === 'Invalid token'
     ) {
       const token = await getAccessToken()
