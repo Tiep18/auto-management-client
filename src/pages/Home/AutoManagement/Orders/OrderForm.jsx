@@ -65,7 +65,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
   const services = useWatch('services', form)
   const totalCost = useMemo(() => {
     if (!services) return 0
-    return services.reduce((total, item) => total + item.value, 0)
+    return services.reduce((total, item) => total + item.title, 0)
   }, [services])
 
   useEffect(() => {
@@ -97,9 +97,10 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       })
       if (result?.data.length > 0) {
         const options = result.data.map((item) => ({
-          value: item.cost,
+          title: item.cost,
           label: item.name + ': ' + item.cost + '$',
           key: item._id,
+          value: item._id,
         }))
         setServiceOption(options)
       }

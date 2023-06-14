@@ -3,18 +3,10 @@ import { CaretRightOutlined } from '@ant-design/icons'
 import { Collapse, theme } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { camelize } from '../../../../utils/index'
-import {
-  getAllServiceThunk,
-  getServiceTypesThunk,
-} from '../../../../redux/service/actions'
+import { getAllServiceThunk } from '../../../../redux/service/actions'
 import ServicesForm from './ServicesForm'
 const { Panel } = Collapse
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`
 const Services = () => {
   const { token } = theme.useToken()
   const dispatch = useDispatch()
