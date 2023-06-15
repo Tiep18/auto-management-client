@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select, notification } from 'antd'
+import { Button, Col, Form, Input, Row, Select, notification } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
@@ -9,7 +9,7 @@ const layout = {
     span: 6,
   },
   wrapperCol: {
-    span: 16,
+    span: 24,
   },
 }
 
@@ -60,98 +60,103 @@ const UserForm = ({ type = 'create', userDetail }) => {
     }
   }
   return (
-    <Form
-      form={form}
-      {...layout}
-      layout="vertical"
-      onFinish={onFinish}
-      className="bg-white p-6 shadow-md rounded-xl"
-      validateMessages={validateMessages}
-      initialValues={{ role: 'STAFF' }}
-      size="large"
-    >
-      <Form.Item
-        name={'fullName'}
-        label="Full Name"
-        rules={[
-          {
-            required: true,
-          },
-          {
-            min: 6,
-            message: 'Username must be at least 6 characters',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="username"
-        label="Username"
-        rules={[
-          { required: true },
-          {
-            min: 6,
-            message: 'Username must be at least 6 characters',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        label="Password"
-        rules={[
-          {
-            required: true,
-          },
-          {
-            min: 6,
-            message: 'Password must be at least 6 characters',
-          },
-        ]}
-      >
-        <Input type="password" />
-      </Form.Item>
-      <Form.Item
-        name="role"
-        label="Role"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Select
-          options={[
-            { label: 'STAFF', value: 'STAFF' },
-            { label: 'ADMIN', value: 'ADMIN' },
-          ]}
-        />
-      </Form.Item>
-
-      <Form.Item
-        wrapperCol={{
-          ...layout.wrapperCol,
-          offset: 0,
-        }}
-      >
-        <Button type="primary" htmlType="submit">
-          {type === 'create' ? 'Submit' : 'Update'}
-        </Button>
-        {type === 'update' && (
-          <Button
-            className="ml-4"
-            type="default"
-            onClick={() => {
-              form.setFieldsValue(userDetail)
-            }}
+    <Row gutter={32} className="pb-6">
+      <Col span={24} className="bg-white p-6 shadow-md rounded-xl">
+        <Col span={12} offset={6}>
+          <Form
+            form={form}
+            {...layout}
+            layout="vertical"
+            onFinish={onFinish}
+            validateMessages={validateMessages}
+            initialValues={{ role: 'STAFF' }}
+            size="large"
           >
-            Reset
-          </Button>
-        )}
-      </Form.Item>
-    </Form>
+            <Form.Item
+              name={'fullName'}
+              label="Full Name"
+              rules={[
+                {
+                  required: true,
+                },
+                {
+                  min: 6,
+                  message: 'Username must be at least 6 characters',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="username"
+              label="Username"
+              rules={[
+                { required: true },
+                {
+                  min: 6,
+                  message: 'Username must be at least 6 characters',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[
+                {
+                  required: true,
+                },
+                {
+                  min: 6,
+                  message: 'Password must be at least 6 characters',
+                },
+              ]}
+            >
+              <Input type="password" />
+            </Form.Item>
+            <Form.Item
+              name="role"
+              label="Role"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Select
+                options={[
+                  { label: 'STAFF', value: 'STAFF' },
+                  { label: 'ADMIN', value: 'ADMIN' },
+                ]}
+              />
+            </Form.Item>
+
+            <Form.Item
+              wrapperCol={{
+                ...layout.wrapperCol,
+                offset: 0,
+              }}
+            >
+              <Button type="primary" htmlType="submit">
+                {type === 'create' ? 'Submit' : 'Update'}
+              </Button>
+              {type === 'update' && (
+                <Button
+                  className="ml-4"
+                  type="default"
+                  onClick={() => {
+                    form.setFieldsValue(userDetail)
+                  }}
+                >
+                  Reset
+                </Button>
+              )}
+            </Form.Item>
+          </Form>
+        </Col>
+      </Col>
+    </Row>
   )
 }
 export default UserForm

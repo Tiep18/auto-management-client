@@ -29,13 +29,7 @@ const CustomerDetail = () => {
   if (!id || (!userDetail && !isLoading)) {
     return <NotFound />
   }
-  return (
-    <Row gutter={32} className="pb-6">
-      <Col span={15}>
-        <CustomerForm userDetail={userDetail} type="update" />
-      </Col>
-    </Row>
-  )
+  return <CustomerForm userDetail={userDetail} type="update" />
 }
 
 export default CustomerDetail
