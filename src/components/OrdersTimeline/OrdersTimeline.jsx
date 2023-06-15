@@ -14,7 +14,7 @@ function OrdersTimeline({ orderOptions }) {
               children: (
                 <Link
                   key={order._id}
-                  to={`../${order._id}`}
+                  to={`/auto-management/orders/${order._id}`}
                   // relative="path"
                 >
                   <h5 className="font-semibold text-sm mb-0">
