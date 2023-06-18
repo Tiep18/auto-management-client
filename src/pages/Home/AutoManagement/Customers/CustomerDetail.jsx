@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import NotFound from '../../../../components/NotFound/NotFound'
 import { getCustomerDetails } from '../../../../redux/customer/actions'
 import { Col, Row, Table, Timeline } from 'antd'
 import CustomerForm from './CustomerForm'
+import OrdersTimeline from '../../../../components/OrdersTimeline/OrdersTimeline'
+import orderService from '../../../../api/orderService'
 
 const CustomerDetail = () => {
   const { id } = useParams()
@@ -12,6 +14,8 @@ const CustomerDetail = () => {
   const { state } = useLocation()
   const dispatch = useDispatch()
   const { isLoading, customerDetail } = useSelector((state) => state.customer)
+  const [orderOptions, setOrderOptions] = useState([])
+
   useEffect(() => {
     if (!id) return
     dispatch(getCustomerDetails(id))
@@ -26,6 +30,26 @@ const CustomerDetail = () => {
       },
     })
   }, [customerDetail, navigate, state?.breadcrumb])
+  useEffect(() => {
+    if (!customerDetail || customerDetail.orders.length === 0) return
+    const getOrders = async () => {
+      try {
+        const res = await orderService.getAllOrders({
+          page: 1,
+          limit: 999,
+          customerId: customerDetail?._id,
+        })
+        setOrderOptions(res.data)
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
+    getOrders()
+  }, [customerDetail])
+  if (!id || (!customerDetail && !isLoading)) {
+    return <NotFound />
+  }
+
   if (!id || (!customerDetail && !isLoading)) {
     return <NotFound />
   }
@@ -66,36 +90,7 @@ const CustomerDetail = () => {
         <div className="p-6 rounded-xl bg-white shadow-lg h-full ">
           <h2 className="mb-5">Orders</h2>
 
-          <Timeline
-            pending="Recording..."
-            // TODO: mock UI
-            items={[
-              {
-                children: (
-                  <Link to={'/'}>
-                    <h5 className="font-semibold text-sm mb-0">
-                      $2,400 - Redesign store
-                    </h5>
-                    <span className="text-[12px] text-[#8c8c8c]">
-                      09 JUN 7:20 PM
-                    </span>
-                  </Link>
-                ),
-              },
-              {
-                children: (
-                  <Link to={'/'}>
-                    <h5 className="font-semibold text-sm mb-0">
-                      $2,400 - Redesign store
-                    </h5>
-                    <span className="text-[12px] text-[#8c8c8c]">
-                      09 JUN 7:20 PM
-                    </span>
-                  </Link>
-                ),
-              },
-            ]}
-          />
+          <OrdersTimeline orderOptions={orderOptions} />
         </div>
       </Col>
     </Row>
