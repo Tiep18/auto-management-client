@@ -129,6 +129,15 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
 
   useEffect(() => {
     if (!orderDetail) return
+
+    const existedServices = orderDetail.services?.map((item) => ({
+      title: item.value,
+      label: item.label + ': ' + item.value + '$',
+      key: item.label,
+      value: item.key,
+    }))
+    orderDetail.services = existedServices
+
     form.setFieldsValue(orderDetail)
   }, [orderDetail, form])
 
