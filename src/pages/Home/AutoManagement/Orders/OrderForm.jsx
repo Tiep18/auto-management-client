@@ -99,7 +99,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         const options = result.data.map((item) => ({
           title: item.cost,
           label: item.name + ': ' + item.cost + '$',
-          key: item._id,
+          key: item.name,
           value: item._id,
         }))
         setServiceOption(options)
@@ -143,9 +143,9 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       plateNumber: values.car.label,
     }
     const services = values.services.map((service) => ({
-      serviceId: service.key,
-      name: service.label,
-      cost: service.value,
+      serviceId: service.value,
+      name: service.key,
+      cost: service.title,
     }))
     const startDate = dayjs(values.startDate).format('YYYY-MM-DD')
     const endDate = values.endDate
