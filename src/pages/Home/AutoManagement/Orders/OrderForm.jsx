@@ -1,28 +1,18 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Select,
-  Space,
-  Spin,
-  notification,
-} from 'antd'
+import { Button, Col, DatePicker, Form, Input } from 'antd'
+import { Row, Select, Spin, notification } from 'antd'
 import { useForm, useWatch } from 'antd/es/form/Form'
-import { useEffect, useMemo, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import orderService from '../../../../api/orderService'
-import customerService from '../../../../api/customerService'
-import useDebounce from '../../../../utils/hooks/useDebounce'
 import dayjs from 'dayjs'
+import { useEffect, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useParams } from 'react-router-dom'
 import axiosInstance from '../../../../api'
+import customerService from '../../../../api/customerService'
+import orderService from '../../../../api/orderService'
 import { updateOrderThunk } from '../../../../redux/order/actions'
-import { useParams } from 'react-router-dom'
+import useDebounce from '../../../../utils/hooks/useDebounce'
 const layout = {
   labelCol: {
-    span: 8,
+    span: 12,
   },
   wrapperCol: {
     span: 24,
@@ -61,6 +51,8 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
   const [fetching, setFetching] = useState(false)
   const debounceCtmValue = useDebounce(searchCtmValue, 500)
   const debounceServiceValue = useDebounce(searchServiceValue, 500)
+
+  const { currentUser } = useSelector((state) => state.auth)
 
   const services = useWatch('services', form)
   const totalCost = useMemo(() => {
@@ -161,6 +153,11 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       ? dayjs(values.endDate).format('YYYY-MM-DD')
       : null
     const status = values.status
+    const payment = {
+      paymentStatus: values.payment,
+      payAtTime:
+        values.payment === 'PAID' ? dayjs().format('YYYY-MM-DD') : null,
+    }
     const data = {
       name,
       customer,
@@ -170,6 +167,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       services,
       status,
       totalCost,
+      payment,
     }
     try {
       if (type === 'create') {
@@ -179,7 +177,15 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         })
         form.resetFields()
       } else if (type === 'update') {
-        const data = { name, startDate, endDate, services, status, totalCost }
+        const data = {
+          name,
+          startDate,
+          endDate,
+          services,
+          status,
+          totalCost,
+          payment,
+        }
         dispatch(updateOrderThunk({ id: id, data: data }))
       }
     } catch (err) {
@@ -200,6 +206,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         status: 'WORKING',
         startDate: dayjs(),
         endDate: null,
+        payment: 'UNPAID',
       }}
       size="large"
     >
@@ -278,10 +285,10 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         />
       </Form.Item>
 
-      <h4>Total Cost: {totalCost}</h4>
+      <h4>Total Cost: ${totalCost}</h4>
 
       <Row className="justify-between">
-        <Col span={7}>
+        <Col span={5}>
           <Form.Item name="status" label="Status" rules={[{ required: true }]}>
             <Select
               initialvalues="WORKING"
@@ -293,7 +300,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
           </Form.Item>
         </Col>
 
-        <Col span={7}>
+        <Col span={5}>
           <Form.Item
             name="startDate"
             label="Start Date"
@@ -303,7 +310,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
           </Form.Item>
         </Col>
 
-        <Col span={7}>
+        <Col span={5}>
           <Form.Item
             name="endDate"
             label="End Date"
@@ -312,13 +319,22 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (value) {
-                    if (dayjs(value) >= dayjs(getFieldValue('startDate')))
-                      return Promise.resolve()
-                    return Promise.reject(
-                      new Error(
-                        'Start date must be less than or equal to End date'
+                    if (dayjs(value) < dayjs(getFieldValue('startDate')))
+                      return Promise.reject(
+                        new Error(
+                          'Start date must be less than or equal to End date'
+                        )
                       )
+                    if (
+                      dayjs(value) < dayjs() &&
+                      getFieldValue('status') === 'WORKING'
                     )
+                      return Promise.reject(
+                        new Error(
+                          'Order status is WORKING so end date must be today or later'
+                        )
+                      )
+                    return Promise.resolve()
                   } else {
                     if (getFieldValue('status') === 'WORKING')
                       return Promise.resolve()
@@ -329,6 +345,23 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
             ]}
           >
             <DatePicker format={'DD/MM/YYYY'} className="w-full" />
+          </Form.Item>
+        </Col>
+
+        <Col span={5}>
+          <Form.Item
+            label="Payment Status"
+            name="payment"
+            rules={[{ required: true }]}
+          >
+            <Select
+              disabled={type === 'create' || currentUser.role === 'STAFF'}
+              initialvalues="UNPAID"
+              options={[
+                { label: 'PAID', value: 'PAID' },
+                { label: 'UNPAID', value: 'UNPAID' },
+              ]}
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -343,15 +376,24 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
           {type === 'create' ? 'Submit' : 'Update'}
         </Button>
         {type === 'update' && (
-          <Button
-            className="ml-4"
-            type="default"
-            onClick={() => {
-              form.setFieldsValue(orderDetail)
-            }}
-          >
-            Reset
-          </Button>
+          <>
+            <Button
+              className="ml-4 mr-4"
+              type="default"
+              onClick={() => {
+                form.setFieldsValue(orderDetail)
+              }}
+            >
+              Reset
+            </Button>
+            {orderDetail?.payment === 'UNPAID' && (
+              <Link to="payment">
+                <Button ghost type="primary">
+                  Payment
+                </Button>
+              </Link>
+            )}
+          </>
         )}
       </Form.Item>
     </Form>

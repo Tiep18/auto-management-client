@@ -1,4 +1,13 @@
-import { Badge, Button, Input, Popconfirm, Radio, Table } from 'antd'
+import {
+  Badge,
+  Button,
+  Input,
+  Popconfirm,
+  Radio,
+  Table,
+  Tag,
+  Tooltip,
+} from 'antd'
 import dayjs from 'dayjs'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -43,6 +52,7 @@ const ListOrder = () => {
   const handleStatusChange = (status) => {
     setStatus(status.target.value)
   }
+
   return (
     <div className="p-6 rounded-xl bg-white shadow-lg">
       <header className="mb-5 flex items-center">
@@ -144,10 +154,45 @@ const ListOrder = () => {
             ),
           },
           {
+            title: 'Payment Status',
+            dataIndex: 'payment',
+            render: (text, record) => {
+              if (text.paymentStatus === 'PAID') {
+                return (
+                  <Tag
+                    color={
+                      text.paymentStatus === 'PAID' ? 'success' : 'processing'
+                    }
+                  >
+                    {text.paymentStatus}
+                  </Tag>
+                )
+              }
+              return (
+                <Tooltip
+                  title="Pay for this order"
+                  color="#108ee9"
+                  placement="left"
+                  mouseEnterDelay={0.02}
+                >
+                  <Link to={`${record._id}/payment`}>
+                    <Tag
+                      color={
+                        text.paymentStatus === 'PAID' ? 'success' : 'processing'
+                      }
+                    >
+                      {text.paymentStatus}
+                    </Tag>
+                  </Link>
+                </Tooltip>
+              )
+            },
+          },
+          {
             title: 'Actions',
             dataIndex: 'actions',
             fixed: 'right',
-            render: (text, record) => (
+            render: (_, record) => (
               <Popconfirm
                 title="Delete"
                 description="Are you sure you want to delete this order?"

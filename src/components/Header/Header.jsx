@@ -14,14 +14,24 @@ const Header = () => {
     const arr = pathname.split('/')
     arr.shift()
     let link = ''
-    const res = arr.map((path) => {
+    const res = arr.map((path, index) => {
       link = link + '/' + path
-      return {
-        title: (
-          <Link className="!text-inherit" to={link}>
-            {mapPathToBreadcrumb[path] || state?.breadcrumb || path}
-          </Link>
-        ),
+      if (index !== arr.length - 1) {
+        return {
+          title: (
+            <Link className="!text-inherit" to={link}>
+              {mapPathToBreadcrumb[path] || state?.breadcrumb || path}
+            </Link>
+          ),
+        }
+      } else {
+        return {
+          title: (
+            <span>
+              {mapPathToBreadcrumb[path] || state?.breadcrumb || path}
+            </span>
+          ),
+        }
       }
     })
     return res
@@ -47,7 +57,7 @@ const Header = () => {
     <AntdHeader className="bgc-fa h-[78px] p-4 my-[10px] mx-5 flex items-center">
       <div className="flex flex-col justify-between h-full">
         <Breadcrumb items={items} />
-        <h2 className="leading-none font-bold text-lg">
+        <h2 className="leading-none font-bold text-lg mt-3">
           {items[items.length - 1]?.title}
         </h2>
       </div>
