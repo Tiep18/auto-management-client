@@ -1,4 +1,13 @@
-import { Badge, Button, Input, Popconfirm, Radio, Table } from 'antd'
+import {
+  Badge,
+  Button,
+  Input,
+  Popconfirm,
+  Radio,
+  Table,
+  Tag,
+  Tooltip,
+} from 'antd'
 import dayjs from 'dayjs'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +22,7 @@ const ListOrder = () => {
   const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState('')
   const [status, setStatus] = useState('ALL')
+  const [paymentStatus, setPaymentStatus] = useState('ALL')
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
   const { orders, page, limit, totalCount, isLoading } = useSelector(
@@ -25,9 +35,10 @@ const ListOrder = () => {
         page: 1,
         search: debouncedSearchTerm,
         status: status === 'ALL' ? null : status,
+        paymentStatus: paymentStatus === 'ALL' ? null : paymentStatus,
       })
     )
-  }, [debouncedSearchTerm, dispatch, status])
+  }, [debouncedSearchTerm, dispatch, status, paymentStatus])
 
   const onSearch = (e) => {
     setSearchTerm(e.target.value)
@@ -40,9 +51,14 @@ const ListOrder = () => {
       })
     )
   }
-  const handleStatusChange = (status) => {
-    setStatus(status.target.value)
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value)
   }
+
+  const handlePaymentStatusChange = (event) => {
+    setPaymentStatus(event.target.value)
+  }
+
   return (
     <div className="p-6 rounded-xl bg-white shadow-lg">
       <header className="mb-5 flex items-center">
@@ -66,28 +82,48 @@ const ListOrder = () => {
             loading={isLoading}
           />
         </div>
-        <div className="flex justify-end">
-          <Radio.Group
-            onChange={handleStatusChange}
-            optionType="button"
-            size="large"
-            options={[
-              {
-                label: 'ALL',
-                value: 'ALL',
-              },
-              {
-                label: 'WORKING',
-                value: 'WORKING',
-              },
-              {
-                label: 'DONE',
-                value: 'DONE',
-              },
-            ]}
-          />
-        </div>
       </header>
+
+      <div className="flex justify-end">
+        <Radio.Group
+          className="me-6"
+          onChange={handleStatusChange}
+          optionType="button"
+          options={[
+            {
+              label: 'ALL',
+              value: 'ALL',
+            },
+            {
+              label: 'WORKING',
+              value: 'WORKING',
+            },
+            {
+              label: 'DONE',
+              value: 'DONE',
+            },
+          ]}
+        />
+        <Radio.Group
+          className="me-6"
+          onChange={handlePaymentStatusChange}
+          optionType="button"
+          options={[
+            {
+              label: 'ALL',
+              value: 'ALL',
+            },
+            {
+              label: 'PAID',
+              value: 'PAID',
+            },
+            {
+              label: 'UNPAID',
+              value: 'UNPAID',
+            },
+          ]}
+        />
+      </div>
 
       <Table
         className="-mx-6 max-w-none"
@@ -144,10 +180,45 @@ const ListOrder = () => {
             ),
           },
           {
+            title: 'Payment Status',
+            dataIndex: 'payment',
+            render: (text, record) => {
+              if (text.paymentStatus === 'PAID') {
+                return (
+                  <Tag
+                    color={
+                      text.paymentStatus === 'PAID' ? 'success' : 'processing'
+                    }
+                  >
+                    {text.paymentStatus}
+                  </Tag>
+                )
+              }
+              return (
+                <Tooltip
+                  title="Pay for this order"
+                  color="#108ee9"
+                  placement="left"
+                  mouseEnterDelay={0.02}
+                >
+                  <Link to={`${record._id}/payment`}>
+                    <Tag
+                      color={
+                        text.paymentStatus === 'PAID' ? 'success' : 'processing'
+                      }
+                    >
+                      {text.paymentStatus}
+                    </Tag>
+                  </Link>
+                </Tooltip>
+              )
+            },
+          },
+          {
             title: 'Actions',
             dataIndex: 'actions',
             fixed: 'right',
-            render: (text, record) => (
+            render: (_, record) => (
               <Popconfirm
                 title="Delete"
                 description="Are you sure you want to delete this order?"

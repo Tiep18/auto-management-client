@@ -12,6 +12,8 @@ export const getAllOrderThunk = createAsyncThunk(
         limit: payload?.limit || limit,
         search: payload?.search || search,
         status: payload?.status || {},
+        paymentStatus: payload?.paymentStatus || {},
+        customerId: payload?.customerId || {},
       })
       return data
     } catch (err) {

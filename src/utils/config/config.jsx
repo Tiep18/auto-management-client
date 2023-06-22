@@ -76,4 +76,5 @@ export const mapPathToBreadcrumb = {
   cars: ' Cars',
   accounts: ' Accounts',
   'create-new-customer': 'Create New Customer',
+  payment: 'payment',
 }
