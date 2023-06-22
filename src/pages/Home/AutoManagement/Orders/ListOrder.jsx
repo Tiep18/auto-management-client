@@ -22,6 +22,7 @@ const ListOrder = () => {
   const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState('')
   const [status, setStatus] = useState('ALL')
+  const [paymentStatus, setPaymentStatus] = useState('ALL')
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
   const { orders, page, limit, totalCount, isLoading } = useSelector(
@@ -34,9 +35,10 @@ const ListOrder = () => {
         page: 1,
         search: debouncedSearchTerm,
         status: status === 'ALL' ? null : status,
+        paymentStatus: paymentStatus === 'ALL' ? null : paymentStatus,
       })
     )
-  }, [debouncedSearchTerm, dispatch, status])
+  }, [debouncedSearchTerm, dispatch, status, paymentStatus])
 
   const onSearch = (e) => {
     setSearchTerm(e.target.value)
@@ -49,8 +51,12 @@ const ListOrder = () => {
       })
     )
   }
-  const handleStatusChange = (status) => {
-    setStatus(status.target.value)
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value)
+  }
+
+  const handlePaymentStatusChange = (event) => {
+    setPaymentStatus(event.target.value)
   }
 
   return (
@@ -76,28 +82,48 @@ const ListOrder = () => {
             loading={isLoading}
           />
         </div>
-        <div className="flex justify-end">
-          <Radio.Group
-            onChange={handleStatusChange}
-            optionType="button"
-            size="large"
-            options={[
-              {
-                label: 'ALL',
-                value: 'ALL',
-              },
-              {
-                label: 'WORKING',
-                value: 'WORKING',
-              },
-              {
-                label: 'DONE',
-                value: 'DONE',
-              },
-            ]}
-          />
-        </div>
       </header>
+
+      <div className="flex justify-end">
+        <Radio.Group
+          className="me-6"
+          onChange={handleStatusChange}
+          optionType="button"
+          options={[
+            {
+              label: 'ALL',
+              value: 'ALL',
+            },
+            {
+              label: 'WORKING',
+              value: 'WORKING',
+            },
+            {
+              label: 'DONE',
+              value: 'DONE',
+            },
+          ]}
+        />
+        <Radio.Group
+          className="me-6"
+          onChange={handlePaymentStatusChange}
+          optionType="button"
+          options={[
+            {
+              label: 'ALL',
+              value: 'ALL',
+            },
+            {
+              label: 'PAID',
+              value: 'PAID',
+            },
+            {
+              label: 'UNPAID',
+              value: 'UNPAID',
+            },
+          ]}
+        />
+      </div>
 
       <Table
         className="-mx-6 max-w-none"
