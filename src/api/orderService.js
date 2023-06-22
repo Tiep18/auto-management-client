@@ -5,9 +5,16 @@ const orderService = {
     return axiosInstance.post('/api/orders', payload)
   },
 
-  getAllOrders: async ({ page, limit, search, status, customerId }) => {
+  getAllOrders: async ({
+    page,
+    limit,
+    search,
+    status,
+    paymentStatus,
+    customerId,
+  }) => {
     return axiosInstance.get('/api/orders', {
-      params: { page, limit, search, status, customerId },
+      params: { page, limit, search, status, paymentStatus, customerId },
     })
   },
 

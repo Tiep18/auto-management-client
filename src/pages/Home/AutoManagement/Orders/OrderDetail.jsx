@@ -15,7 +15,7 @@ const OrderDetail = () => {
   useEffect(() => {
     if (!id) return
     dispatch(getOrderDetails(id))
-  }, [dispatch, id, navigate])
+  }, [dispatch, id])
 
   const { isLoading, orderDetail } = useSelector((state) => state.order)
 
@@ -39,6 +39,7 @@ const OrderDetail = () => {
     }))
     const status = orderDetail?.status
     const name = orderDetail?.name
+    const payment = orderDetail?.payment.paymentStatus
     return {
       customer,
       car,
@@ -47,6 +48,7 @@ const OrderDetail = () => {
       services,
       status,
       name,
+      payment,
     }
   }, [orderDetail])
 
