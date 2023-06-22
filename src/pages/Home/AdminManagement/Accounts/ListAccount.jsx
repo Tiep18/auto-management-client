@@ -81,6 +81,14 @@ const ListAccount = () => {
             dataIndex: 'fullName',
           },
           {
+            title: 'Email Address',
+            dataIndex: 'email',
+          },
+          {
+            title: 'Phone Number',
+            dataIndex: 'phone',
+          },
+          {
             title: 'Role',
             dataIndex: 'role',
           },
