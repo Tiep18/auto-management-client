@@ -1,7 +1,16 @@
 import { faMoneyBills, faQrcode } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Col, Descriptions, Modal } from 'antd'
-import { Radio, Row, Spin, Table, Watermark } from 'antd'
+import {
+  Button,
+  Col,
+  Descriptions,
+  Modal,
+  Radio,
+  Row,
+  Spin,
+  Table,
+  Watermark,
+} from 'antd'
 import Paragraph from 'antd/es/typography/Paragraph'
 import dayjs from 'dayjs'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
@@ -167,7 +176,9 @@ function OrderPayment() {
             <Button key="submit" type="primary" onClick={handleOk}>
               Confirm
             </Button>,
-            <Button key="back">Cancel</Button>,
+            <Button key="back" onClick={() => setIsOpen(false)}>
+              Cancel
+            </Button>,
           ]}
         >
           <p>
