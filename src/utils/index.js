@@ -87,7 +87,7 @@ export function generateDataByMonth(data, valueType) {
 }
 
 export function growthCalculator(data, valueType) {
-  if (data.length === 0) return
+  if (data.length <= 1) return
   return (
     (data.at(-1)[valueType] / data.at(-2)[valueType]) * 100 -
     100
